@@ -1,8 +1,3 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/eZm3ZHfi)
-# backup-restore-script
-
--- WRITE HERE --
-
 Backup and Restore Script Project
 
 This project is for the CC373 Operating Systems lab. It contains a shell script to automatically back up a directory and a second script to restore it from different versions. There is also a Makefile to help run the scripts easily.

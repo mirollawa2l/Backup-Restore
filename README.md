@@ -1,92 +1,144 @@
-Backup and Restore Script Project
+# Backup and Restore Script Project
 
-This project is for the CC373 Operating Systems lab. It contains a shell script to automatically back up a directory and a second script to restore it from different versions. There is also a Makefile to help run the scripts easily.
+This project provides a simple backup and restore solution implemented using Bash scripts. It provides a simple backup and restore solution using Bash scripts, along with a Makefile to simplify execution. The system automatically creates versioned backups of a directory and allows restoring previous versions interactively.
 
-Project Files
+---
 
-Here's a list of the files in this project and what they do.
+## Project Structure
 
-Source/: This is the folder you should put your files into.
-backup/: The scripts will save all the backups in this folder.
-backupd.sh: This script watches the Source folder and creates backups when files change.
-restore.sh: This script lets you restore the Source folder to a previous backup version.
-backup-cron.sh: This is for the bonus part, to set up an automatic backup schedule.
-Makefile: Contains shortcuts to run the backup and restore scripts.
-README.md: This file, which explains the project.
+```
+.
+├── Source/            # Directory to be backed up (user files go here)
+├── backup/            # Automatically created folder that stores backups
+├── backupd.sh         # Monitors Source/ and creates backups on changes
+├── restore.sh         # Restores Source/ from selected backup versions
+├── backup-cron.sh     # Bonus: script used with cron for scheduled backups
+├── Makefile           # Provides easy commands to run scripts
+└── README.md          # Project documentation
+```
 
-Prerequisites
+---
 
-You don't need to install any special software. As long as you are using a Linux system like Ubuntu, you should have everything you need already (bash, make).
+## Prerequisites
 
-How to Use
+No additional software installation is required. The project runs on any Linux distribution (e.g., Ubuntu) with:
 
-Here are the steps to run the backup and restore solution.
+* `bash`
+* `make`
+* Standard GNU utilities
 
-Step 1: Set up the Source Directory
+---
 
-First, you need to create a folder named Source in the main project directory. Place any files you want to back up inside this folder. The backup directory will be created for you when you run the script.
+## How to Use
 
-Step 2: Run the Backup Script
+### Step 1: Set Up the Source Directory
 
-To start backing up your files, open a terminal and run this command:
-Bash
+Create a directory named `Source` in the main project folder:
 
+```bash
+mkdir Source
+```
+
+Place any files or folders you want to back up inside `Source/`. The `backup/` directory will be created automatically when the backup script runs.
+
+---
+
+### Step 2: Run the Backup Script
+
+Start the backup daemon using:
+
+```bash
 make backup
+```
 
-This will start the backupd.sh script. It will make one backup immediately. Then, it will keep checking for any changes in the Source folder every few seconds. If it finds a change, it will create a new backup. The script also cleans up old backups, so it only keeps the most recent ones as defined in the Makefile. To stop the script, press Ctrl+C.
+**What this does:**
 
-Step 3: Run the Restore Script
+* Creates an initial backup immediately
+* Periodically checks the `Source/` directory for changes
+* Creates a new backup whenever a change is detected
+* Automatically deletes older backups, keeping only the most recent versions (as defined in the Makefile)
 
-If you need to restore your Source folder from a backup, run this command:
-Bash
+To stop the backup process, press **Ctrl + C**.
 
+---
+
+### Step 3: Run the Restore Script
+
+To restore files from a previous backup version, run:
+
+```bash
 make restore
+```
 
-This starts an interactive script that lets you navigate through your backups. You will see a menu with these options:
+This launches an interactive menu with the following options:
 
-    Enter 1: Restore the source directory to the previous version.
+* **1** – Restore the previous backup version
+* **2** – Restore the next available backup version
+* **3** – Exit the restore script
 
-Enter 2: Move forward and restore the source directory to the next available version.
+The script prints informative messages indicating which backup version is currently restored.
 
-Enter 3: Exit the script.
+---
 
-The script will print messages telling you which version was restored.
+## Bonus: Automatic Backups Using Cron
 
-Bonus: Cron Job for Automatic Backups
+As part of the bonus requirement, backups can be automated using a **cron job**, which allows scripts to run on a fixed schedule.
 
-The lab also included a bonus part to automate the backup process using a cron job. A cron job is a feature in Linux that runs commands on a schedule.
+### How to Configure the Cron Job
 
-How to Configure the Cron Job
+1. Open the crontab editor:
 
-    Open the crontab file in your terminal. This is where cron jobs are configured.
-    Bash
-
+```bash
 crontab -e
+```
 
-Add the following line to the end of the file. You must replace /path/to/your/project with the full, absolute path to this project's folder on your computer.
-Code snippet
+2. Add the following line at the end of the file (replace `/path/to/your/project` with the absolute path to this project):
 
-    * * * * * /path/to/your/project/backup-cron.sh
+```bash
+* * * * * /path/to/your/project/backup-cron.sh
+```
 
-    This line tells cron to run the backup-cron.sh script every minute.
+3. Save and exit the editor.
 
-    Save and exit the editor. The backup script will now run automatically.
+This configuration runs the backup script **every minute**.
 
-Cron Expression Question
+---
 
-The lab asked for the cron expression needed to run a backup every 3rd Friday of the month at 12:31 am.
+## Cron Expression Question
 
-The correct expression is:
+**Question:** What cron expression runs a backup every **3rd Friday of the month at 12:31 AM**?
+
+**Answer:**
+
+```
 31 0 15-21 * 5
+```
 
-Here is what each part means:
+### Explanation
 
-    31: At minute 31.
+| Field        | Value   | Meaning                   |
+| ------------ | ------- | ------------------------- |
+| Minute       | `31`    | At minute 31              |
+| Hour         | `0`     | At 12:00 AM               |
+| Day of Month | `15-21` | Between the 15th and 21st |
+| Month        | `*`     | Every month               |
+| Day of Week  | `5`     | Friday                    |
 
-    0: At hour 0 (12:00 AM).
+This works because the **3rd Friday** of any month always falls between the 15th and 21st.
 
-    15-21: On a day of the month between the 15th and 21st.
+---
 
-    *: In any month.
+## Notes
 
-    5: On the 5th day of the week (Friday).
+* Ensure scripts have execute permission:
+
+```bash
+chmod +x *.sh
+```
+
+* This project demonstrates key OS concepts such as process automation, file system monitoring, and scheduling using cron.
+
+---
+
+This project demonstrates automated backups, version control of directories, interactive restoration, and optional scheduled execution using cron.
+
